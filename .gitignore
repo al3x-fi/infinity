@@ -1,0 +1,22 @@
+# dependencies & builds
+node_modules/
+dist/
+dist-artifact/
+*.tar.gz
+
+# secrets — never commit
+.env
+.env.*
+!.env.example
+
+# deploy / tool state
+.vercel/
+.claude/
+
+# user data
+waitlist/data/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

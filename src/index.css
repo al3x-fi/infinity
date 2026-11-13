@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/* Light, monochrome theme inspired by layerzero.network:
+   near-white page, near-black text, Roboto, thin neutral borders.
+   Green/red are kept for performance, the only colour accents. */
+@theme {
+  --color-bg: #fcfcfc;
+  --color-panel: #ffffff;
+  --color-line: #e5e5e5;
+  --color-ink: #171717;
+  --color-mute: #737373;
+  --color-violet: #171717;
+  --color-cyan: #171717;
+  --color-up: #16a34a;
+  --color-down: #dc2626;
+  --color-warn: #b45309;
+}
+
+/* Dark theme: switched by data-theme="dark" on <html> (see ThemeToggle). */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #0c0c0c;
+  --color-panel: #141414;
+  --color-line: #2a2a2a;
+  --color-ink: #ededed;
+  --color-mute: #8f8f8f;
+  --color-violet: #ededed;
+  --color-cyan: #ededed;
+  --color-up: #4ade80;
+  --color-down: #f87171;
+  --color-warn: #f59e0b;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: Roboto, system-ui, sans-serif;
+  font-weight: 400;
+}
+
+h1, h2, h3 { letter-spacing: -0.02em; }
+
+a, button { transition: color 0.15s, background-color 0.15s, border-color 0.15s; }
+
+input, select {
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--color-ink);
+}
+
+/* Logo file is white on transparent; invert it on the light theme only. */
+img[src$="logo.png"] { filter: invert(1); }
+:root[data-theme="dark"] img[src$="logo.png"] { filter: none; }
+
+/* Solid buttons use the ink colour as fill, so their text takes the page colour. */
+.bg-violet { color: var(--color-bg); }
+
+/* ---- Effects ---- */
+
+/* Scroll reveal (see components/Reveal). */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.reveal-in { opacity: 1; transform: none; }
+
+/* Soft drifting glow behind the hero. */
+.hero-glow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+.hero-glow::before, .hero-glow::after {
+  content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-ink) 10%, transparent), transparent 70%);
+  filter: blur(40px); animation: drift 14s ease-in-out infinite alternate;
+}
+.hero-glow::before { top: -160px; left: 8%; }
+.hero-glow::after { top: 40px; right: 6%; animation-delay: -7s; }
+@keyframes drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(60px, 40px) scale(1.15); } }
+
+/* Hero entrance, staggered. */
+.rise { opacity: 0; animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* Hero line art breathes slowly. */
+.breathe { animation: breathe 6s ease-in-out infinite alternate; transform-origin: center; }
+@keyframes breathe { from { transform: scaleY(0.94); opacity: 0.85; } to { transform: scaleY(1.04); opacity: 1; } }
+
+/* Cards lift on hover. */
+.lift { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+.lift:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--color-ink) 35%, var(--color-line)); box-shadow: 0 10px 30px -12px color-mix(in srgb, var(--color-ink) 25%, transparent); }
+
+/* Solid buttons: light sweep on hover and a small press. */
+.bg-violet { position: relative; overflow: hidden; }
+.bg-violet::after {
+  content: ""; position: absolute; inset: 0; transform: translateX(-120%);
+  background: linear-gradient(100deg, transparent 30%, color-mix(in srgb, var(--color-bg) 35%, transparent) 50%, transparent 70%);
+}
+.bg-violet:hover::after { transform: translateX(120%); transition: transform 0.7s ease; }
+.bg-violet:active { transform: scale(0.97); }
+
+/* Route changes fade in. */
+.page-in { animation: rise 0.4s ease both; }
+
+/* Table rows react to hover. */
+tbody tr { transition: background-color 0.15s; }
+tbody tr:hover { background: color-mix(in srgb, var(--color-ink) 4%, transparent); }
+
+/* Scrolling ticker: two identical rows, shift by one row's width. */
+.ticker { animation: ticker 40s linear infinite; }
+.ticker:hover { animation-play-state: paused; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker { animation: none; }
+  a, button { transition: none; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .rise, .page-in { animation: none; opacity: 1; }
+  .hero-glow::before, .hero-glow::after, .breathe { animation: none; }
+  .lift:hover, .bg-violet:active { transform: none; }
+  .bg-violet:hover::after { transition: none; }
+}
