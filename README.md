@@ -11,7 +11,10 @@ A concentrated liquidity terminal being built for the **Zero** network (LayerZer
 - **Discover** pools from integrated DEXs
 - **Liquidity Studio** — Spot, Curve, Bid-Ask and Custom distributions
 - **Token safety** checks before you deposit
-- **My Positions**, fees and balances per wallet
+- **Profile / My Positions**, fees and balances per wallet
+- **Watchlist** — star pools in Discover and pool pages (saved in your browser)
+- **Public portfolios** — read-only view of any wallet at `/u/:address`, on-chain data only
+- **Referrals** — share a `?ref=` link; the referrer code is remembered locally (no backend yet)
 - **Analytics** and in-app **Docs**
 - Wallet connect via WalletConnect (Reown AppKit) — never asks for a seed phrase or private key
 
