@@ -8,6 +8,7 @@ import { walletReady } from "../wallet/appkit";
 import { short } from "../components/ConnectButton";
 import { Link } from "react-router-dom";
 import CopyField from "../components/CopyField";
+import ProfileEditor from "../components/ProfileEditor";
 import { portfolioLink } from "../lib/referral";
 
 function Setup() {
@@ -70,6 +71,10 @@ function Connected() {
   const symbol = caipNetwork?.nativeCurrency.symbol ?? "";
   return (
     <>
+      <Panel title="Your profile">
+        <ProfileEditor address={address} />
+      </Panel>
+
       <Panel title="Wallet" right={<button onClick={() => disconnect()} className="text-xs text-mute hover:text-ink">Disconnect</button>}>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           <Stat label="Address" value={short(address)} />

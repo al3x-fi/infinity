@@ -15,6 +15,7 @@ A concentrated liquidity terminal being built for the **Zero** network (LayerZer
 - **Watchlist** — star pools in Discover and pool pages (saved in your browser)
 - **Public portfolios** — read-only view of any wallet at `/u/:address`, on-chain data only
 - **Referrals** — share a `?ref=` link; the referrer code is remembered locally (no backend yet)
+- **Wallet profiles** — pick a username and avatar; changes require a wallet signature (plain-text message, no keys ever shared)
 - **Analytics** and in-app **Docs**
 - Wallet connect via WalletConnect (Reown AppKit) — never asks for a seed phrase or private key
 
@@ -44,6 +45,7 @@ Build for production: `npm run build`
 ```
 src/            App source (pages, components, adapters, wallet, docs content)
 waitlist/       Zero-dependency waitlist server (node server.cjs)
+server/profiles/ Profiles API (username + avatar per wallet, signature-verified) + systemd unit
 docs/           Research and architecture notes
 posters/        Brand and social assets
 supabase-*.sql  Database setup

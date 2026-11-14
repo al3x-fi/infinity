@@ -3,31 +3,48 @@ import { Link, useParams } from "react-router-dom";
 import { isAddress } from "ethers";
 import { PageHero, Panel } from "../components/ui";
 import CopyField from "../components/CopyField";
+import Avatar from "../components/Avatar";
 import { adapters } from "../adapters/registry";
 import type { PositionInfo } from "../adapters/types/DexAdapter";
 import { portfolioLink } from "../lib/referral";
+import { USERNAME_RE, fetchByUsername, useProfile } from "../lib/profile";
 import { short } from "../components/ConnectButton";
 
-/** Public, read-only view of any wallet's positions. Uses on-chain data only. */
+/** Public, read-only view of a wallet's positions. The URL can hold a wallet address or a username. */
 export default function Portfolio() {
-  const { address = "" } = useParams();
-  const valid = isAddress(address);
+  const { address: id = "" } = useParams();
+  const isAddr = Boolean(isAddress(id));
+  const [resolved, setResolved] = useState<string | null | undefined>(isAddr ? id : undefined);
   const [positions, setPositions] = useState<PositionInfo[] | null>(null);
+
+  // A username is looked up on the server; an address is used as is.
+  useEffect(() => {
+    if (isAddr) { setResolved(id); return; }
+    if (!USERNAME_RE.test(id.toLowerCase())) { setResolved(null); return; }
+    let stale = false;
+    setResolved(undefined);
+    fetchByUsername(id).then((r) => { if (!stale) setResolved(r ? r.address : null); });
+    return () => { stale = true; };
+  }, [id, isAddr]);
+
+  const address = resolved ?? "";
+  const profile = useProfile(resolved ?? undefined);
 
   useEffect(() => {
     setPositions(null);
-    if (!valid) return;
+    if (!resolved) return;
     let stale = false;
-    Promise.all(adapters.filter((a) => a.capabilities.concentratedLiquidity).map((a) => a.getPositions(address as `0x${string}`)))
+    Promise.all(adapters.filter((a) => a.capabilities.concentratedLiquidity).map((a) => a.getPositions(resolved as `0x${string}`)))
       .then((all) => { if (!stale) setPositions(all.flat()); })
       .catch(() => { if (!stale) setPositions([]); });
     return () => { stale = true; };
-  }, [address, valid]);
+  }, [resolved]);
 
-  if (!valid) {
+  if (resolved === undefined) return <PageHero title="Portfolio" intro="Loading…" />;
+  if (resolved === null) {
     return (
       <>
-        <PageHero title="Portfolio" intro="That is not a valid wallet address." />
+        <PageHero title="Portfolio" intro="No wallet or username matches that link." />
         <Link to="/discover" className="text-sm text-mute hover:text-ink">← Back to Pools</Link>
       </>
     );
@@ -36,11 +53,12 @@ export default function Portfolio() {
   return (
     <>
       <PageHero
-        title={short(address)}
-        intro="A public, read-only view of this wallet's liquidity positions on the DEXs INFINITY supports. Anyone with the address can see this, because the data is already public on chain."
+        title={profile ? `@${profile.username}` : short(address)}
+        right={<Avatar address={address} username={profile?.username} src={profile?.avatar} size={72} />}
+        intro="A public, read-only view of this wallet's liquidity positions on the DEXs INFINITY supports. Anyone can see this, because the data is already public on chain."
       />
       <Panel title="Share this portfolio">
-        <CopyField value={portfolioLink(address)} />
+        <CopyField value={portfolioLink(profile?.username ?? address)} />
       </Panel>
       <Panel title="Positions on supported DEXs">
         {adapters.length === 0 ? (

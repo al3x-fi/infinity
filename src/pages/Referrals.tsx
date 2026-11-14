@@ -3,16 +3,25 @@ import { useAppKitAccount } from "@reown/appkit/react";
 import { PageHero, Panel } from "../components/ui";
 import CopyField from "../components/CopyField";
 import { walletReady } from "../wallet/appkit";
+import { useProfile } from "../lib/profile";
 import { getMyCode, getReferrer, isValidCode, refLink, setMyCode } from "../lib/referral";
 
 /** Only mounted when AppKit is configured, because the hook needs it. */
 function WalletCode({ onUse }: { onUse: (a: string) => void }) {
   const { address, isConnected } = useAppKitAccount();
+  const profile = useProfile(address);
   if (!isConnected || !address) return null;
   return (
-    <button onClick={() => onUse(address)} className="rounded-xl border border-line px-4 py-2 text-sm text-mute hover:text-ink">
-      Use my wallet address as my code
-    </button>
+    <div className="flex flex-wrap gap-2">
+      {profile && (
+        <button onClick={() => onUse(profile.username)} className="rounded-xl border border-line px-4 py-2 text-sm text-mute hover:text-ink">
+          Use my username (@{profile.username})
+        </button>
+      )}
+      <button onClick={() => onUse(address)} className="rounded-xl border border-line px-4 py-2 text-sm text-mute hover:text-ink">
+        Use my wallet address
+      </button>
+    </div>
   );
 }
 

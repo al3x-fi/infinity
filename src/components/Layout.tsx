@@ -1,8 +1,10 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import ConnectButton, { useIsConnected } from "./ConnectButton";
+import ConnectButton from "./ConnectButton";
 import Footer from "./Footer";
+import FirstConnectPrompt from "./FirstConnectPrompt";
+import { walletReady } from "../wallet/appkit";
 
-const baseLinks = [
+const links = [
   ["/discover", "Pools"],
   ["/studio", "Liquidity Studio"],
   ["/analytics", "Analytics"],
@@ -10,7 +12,7 @@ const baseLinks = [
 ];
 
 // Short labels for the phone-width bottom bar.
-const baseTabs = [
+const tabs = [
   ["/discover", "Pools"],
   ["/studio", "Studio"],
   ["/analytics", "Analytics"],
@@ -18,10 +20,6 @@ const baseTabs = [
 
 export default function Layout() {
   const { pathname } = useLocation();
-  const connected = useIsConnected();
-  // The Profile tab only appears once a wallet is connected.
-  const links = connected ? [...baseLinks.slice(0, 3), ["/profile", "Profile"], baseLinks[3]] : baseLinks;
-  const tabs = connected ? [...baseTabs, ["/profile", "Profile"]] : baseTabs;
   return (
     <div className="min-h-screen">
       <div className="bg-warn/10 text-warn text-center text-xs py-1.5">
@@ -49,6 +47,7 @@ export default function Layout() {
           </div>
         </div>
       </header>
+      {walletReady && <FirstConnectPrompt />}
       <main key={pathname} className="page-in mx-auto max-w-7xl space-y-4 px-4 py-6 pb-24 md:pb-6">
         <Outlet />
       </main>
