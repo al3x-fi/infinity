@@ -4,7 +4,7 @@ import { TOKEN_CA, TOKEN_SYMBOL } from "../config/token";
 
 const columns: { title: string; links: [string, string][] }[] = [
   { title: "Product", links: [["/discover", "Pools"], ["/studio", "Liquidity Studio"], ["/profile", "Profile"]] },
-  { title: "Resources", links: [["/analytics", "Analytics"], ["/docs", "Docs"]] },
+  { title: "Resources", links: [["/analytics", "Analytics"], ["/referrals", "Referrals"], ["/docs", "Docs"]] },
 ];
 
 function TokenCA() {
@@ -34,7 +34,7 @@ export default function Footer() {
     <footer className="mt-10 border-t border-line">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 md:grid-cols-[1fr_auto]">
         <div>
-          <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-5 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-7 w-auto" />
           <p className="mt-4 text-mute">The concentrated-liquidity terminal for Zero.</p>
           <TokenCA />
         </div>

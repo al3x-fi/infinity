@@ -4,6 +4,7 @@ import { demoPools } from "../demo/data";
 import { Badge, Panel } from "../components/ui";
 import PositionForm, { type FormState } from "../components/PositionForm";
 import SwapPanel from "../components/SwapPanel";
+import StarButton from "../components/StarButton";
 import { buildBins, fmtNum, fmtUsd } from "../lib/liquidity";
 
 const tileBg = (id: string) => {
@@ -119,7 +120,8 @@ export default function PoolDetails() {
               <Badge>Age {pool.ageDays}d</Badge>
             </div>
           </div>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex items-center gap-2">
+            <StarButton id={pool.id} className="border border-line" />
             <Link to="/studio" className="rounded-xl border border-line px-4 py-2 text-sm text-mute hover:text-ink">Simulate</Link>
             <button onClick={() => setOpen(true)} className="rounded-xl bg-violet px-4 py-2 text-sm font-medium">+ New position</button>
           </div>

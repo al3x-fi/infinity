@@ -1,8 +1,8 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import ConnectButton from "./ConnectButton";
+import ConnectButton, { useIsConnected } from "./ConnectButton";
 import Footer from "./Footer";
 
-const links = [
+const baseLinks = [
   ["/discover", "Pools"],
   ["/studio", "Liquidity Studio"],
   ["/analytics", "Analytics"],
@@ -10,7 +10,7 @@ const links = [
 ];
 
 // Short labels for the phone-width bottom bar.
-const tabs = [
+const baseTabs = [
   ["/discover", "Pools"],
   ["/studio", "Studio"],
   ["/analytics", "Analytics"],
@@ -18,23 +18,27 @@ const tabs = [
 
 export default function Layout() {
   const { pathname } = useLocation();
+  const connected = useIsConnected();
+  // The Profile tab only appears once a wallet is connected.
+  const links = connected ? [...baseLinks.slice(0, 3), ["/profile", "Profile"], baseLinks[3]] : baseLinks;
+  const tabs = connected ? [...baseTabs, ["/profile", "Profile"]] : baseTabs;
   return (
     <div className="min-h-screen">
       <div className="bg-warn/10 text-warn text-center text-xs py-1.5">
         DEMONSTRATION DATA — no blockchain connection yet. Nothing here is real, and no transactions can be sent.
       </div>
       <header className="border-b border-line">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-6 px-4 py-3">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-8 px-4 py-4">
           <NavLink to="/" aria-label="INFINITY home">
-            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-5 w-auto" />
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-7 w-auto md:h-9" />
           </NavLink>
-          <nav className="hidden flex-wrap gap-1 text-sm md:flex">
+          <nav className="hidden flex-wrap gap-1 text-base md:flex">
             {links.map(([to, label]) => (
               <NavLink
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `rounded-full px-3.5 py-1.5 ${isActive ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/5 hover:text-ink"}`}
+                  `rounded-full px-4 py-2 ${isActive ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/5 hover:text-ink"}`}
               >
                 {label}
               </NavLink>
@@ -49,7 +53,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <div className="pb-14 md:pb-0"><Footer /></div>
-      <nav className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-3 border-t border-line bg-panel/95 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 grid auto-cols-fr grid-flow-col border-t border-line bg-panel/95 backdrop-blur md:hidden">
         {tabs.map(([to, label]) => (
           <NavLink
             key={to}

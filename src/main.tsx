@@ -11,11 +11,16 @@ import Discover from "./pages/Discover";
 import PoolDetails from "./pages/PoolDetails";
 import LiquidityStudio from "./pages/LiquidityStudio";
 import Analytics from "./pages/Analytics";
+import Referrals from "./pages/Referrals";
+import Portfolio from "./pages/Portfolio";
+import { captureRef } from "./lib/referral";
 // Loaded on demand so the database client is not part of the public site bundle.
 const Admin = lazy(() => import("./pages/Admin"));
 
 // The hosted artifact build cannot use real URL paths, so it keeps the route in memory.
 const Router = import.meta.env.VITE_ARTIFACT ? MemoryRouter : BrowserRouter;
+
+captureRef();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -29,6 +34,8 @@ createRoot(document.getElementById("root")!).render(
           <Route path="positions" element={<Navigate to="/profile" replace />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="referrals" element={<Referrals />} />
+          <Route path="u/:address" element={<Portfolio />} />
           <Route path="admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
           <Route path="docs" element={<Docs />} />
           <Route path="docs/:slug" element={<Docs />} />

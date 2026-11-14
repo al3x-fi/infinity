@@ -4,6 +4,8 @@ import { Area, AreaChart, ResponsiveContainer } from "recharts";
 import { demoPools, demoSeries, dexNames, feeTiers, type DemoPool } from "../demo/data";
 import { Badge } from "../components/ui";
 import { fmtNum, fmtUsd } from "../lib/liquidity";
+import { useWatchlist } from "../lib/watchlist";
+import StarButton from "../components/StarButton";
 
 // Demo-only extras (fabricated). null = unavailable.
 const extra: Record<string, { holders: number | null; flags: number | null }> = {
@@ -15,7 +17,7 @@ const extra: Record<string, { holders: number | null; flags: number | null }> = 
 };
 
 type SortKey = "age" | "tvl" | "volume" | "feesTvl" | "apr";
-type Tab = "all" | "low" | "new";
+type Tab = "all" | "low" | "new" | "watch";
 type View = "cards" | "table";
 
 const feesOf = (p: DemoPool) => (p.volume24hUsd === null ? null : (p.volume24hUsd * p.feeTier) / 100);
@@ -68,7 +70,9 @@ function MiniStat({ label, value, tone }: { label: string; value: string; tone?:
 function PoolCard({ p, onOpen }: { p: DemoPool; onOpen: () => void }) {
   const apr = aprOf(p);
   return (
-    <button onClick={onOpen} className="lift group overflow-hidden rounded-2xl border border-line bg-panel text-left">
+    <div className="relative">
+    <StarButton id={p.id} className="absolute left-2 top-2 z-10 bg-black/40" />
+    <button onClick={onOpen} className="lift group w-full overflow-hidden rounded-2xl border border-line bg-panel text-left">
       <div className="relative flex h-32 items-center justify-center" style={{ background: tileBg(p.id) }}>
         <span className="text-5xl font-medium tracking-tight text-white/90 transition-transform duration-300 group-hover:scale-110">
           {p.pair[0].slice(0, 3).toUpperCase()}
@@ -99,6 +103,7 @@ function PoolCard({ p, onOpen }: { p: DemoPool; onOpen: () => void }) {
         </div>
       </div>
     </button>
+    </div>
   );
 }
 
@@ -113,6 +118,7 @@ export default function Discover() {
   const [view, setView] = useState<View>("cards");
   const [showFilters, setShowFilters] = useState(false);
   const [feat, setFeat] = useState(0);
+  const watch = useWatchlist();
 
   // Featured card rotates through pools.
   useEffect(() => {
@@ -138,7 +144,7 @@ export default function Discover() {
       .filter((p) => p.pair.join("/").toLowerCase().includes(q.toLowerCase()))
       .filter((p) => dex === "all" || p.dex === dex)
       .filter((p) => fee === "all" || p.feeTier === Number(fee))
-      .filter((p) => tab === "all" || (tab === "low" ? p.risk === "low" : p.ageDays < 7))
+      .filter((p) => tab === "all" || (tab === "watch" ? watch.ids.includes(p.id) : tab === "low" ? p.risk === "low" : p.ageDays < 7))
       .sort((a, b) => {
         const x = val(a), y = val(b);
         if (x === null && y === null) return 0;
@@ -146,7 +152,7 @@ export default function Discover() {
         if (y === null) return -1;
         return asc ? x - y : y - x;
       });
-  }, [q, dex, fee, tab, sort, asc]);
+  }, [q, dex, fee, tab, sort, asc, watch.ids]);
 
   const groups = useMemo(() => {
     const names = [...new Set(rows.map((p) => p.dex))];
@@ -219,7 +225,7 @@ export default function Discover() {
       {/* Filter bar */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex rounded-xl border border-line bg-panel p-1 text-sm">
-          {([["all", "All"], ["low", "Low risk"], ["new", "New"]] as [Tab, string][]).map(([k, l]) => (
+          {([["all", "All"], ["watch", `★ Watchlist${watch.ids.length ? ` (${watch.ids.length})` : ""}`], ["low", "Low risk"], ["new", "New"]] as [Tab, string][]).map(([k, l]) => (
             <button key={k} onClick={() => setTab(k)}
               className={`rounded-lg px-4 py-1.5 ${tab === k ? "bg-ink text-bg" : "text-mute hover:text-ink"}`}>
               {l}
@@ -265,7 +271,13 @@ export default function Discover() {
         )}
       </div>
 
-      {rows.length === 0 && <p className="rounded-xl border border-line bg-panel p-6 text-mute">No pools match.</p>}
+      {rows.length === 0 && (
+        <p className="rounded-xl border border-line bg-panel p-6 text-mute">
+          {tab === "watch" && watch.ids.length === 0
+            ? "Your watchlist is empty. Tap the ☆ on any pool to add it. The list is saved in this browser only."
+            : "No pools match."}
+        </p>
+      )}
 
       {view === "cards" &&
         groups.map((g) => (
@@ -292,6 +304,7 @@ export default function Discover() {
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-medium text-white" style={{ background: tileBg(p.id) }}>
                     {p.pair[0].slice(0, 2).toUpperCase()}
                   </div>
+                  <StarButton id={p.id} />
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-medium">{p.pair[0]}/{p.pair[1]}</div>
                     <div className="mt-1 flex flex-wrap gap-1">
@@ -333,6 +346,7 @@ export default function Discover() {
                     <tr key={p.id} onClick={() => nav(`/pool/${p.id}`)} className="cursor-pointer border-b border-line/60">
                       <td className="px-3 py-3">
                         <div className="flex items-center gap-2">
+                          <StarButton id={p.id} />
                           <span className="font-semibold">{p.pair[0]}/{p.pair[1]}</span>
                           <Badge>Fee {p.feeTier}%</Badge>
                           <Badge tone="violet">{p.dex}</Badge>

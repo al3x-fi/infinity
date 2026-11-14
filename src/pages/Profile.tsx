@@ -6,6 +6,9 @@ import { adapters } from "../adapters/registry";
 import type { PositionInfo } from "../adapters/types/DexAdapter";
 import { walletReady } from "../wallet/appkit";
 import { short } from "../components/ConnectButton";
+import { Link } from "react-router-dom";
+import CopyField from "../components/CopyField";
+import { portfolioLink } from "../lib/referral";
 
 function Setup() {
   return (
@@ -98,6 +101,12 @@ function Connected() {
             ))}
           </ul>
         )}
+      </Panel>
+
+      <Panel title="Share">
+        <p className="mb-2 text-xs text-mute">Anyone with this link can see your positions. It shows public on-chain data only and cannot move funds.</p>
+        <CopyField value={portfolioLink(address)} />
+        <Link to="/referrals" className="mt-3 inline-block text-xs text-mute hover:text-ink">Get a referral link →</Link>
       </Panel>
 
       <p className="text-xs text-mute">

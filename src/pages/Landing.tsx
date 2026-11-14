@@ -78,9 +78,9 @@ export default function Landing() {
     <div className="min-h-screen">
       <LiquiditySphere />
       <header className="sticky top-0 z-10 border-b border-line bg-bg/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-6 px-4 py-3">
-          <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-5 w-auto" />
-          <nav className="hidden gap-5 text-sm text-mute md:flex">
+        <div className="mx-auto flex max-w-7xl items-center gap-8 px-4 py-4">
+          <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-7 w-auto md:h-9" />
+          <nav className="hidden gap-6 text-base text-mute md:flex">
             <a href="#features" className="hover:text-ink">Features</a>
             <a href="#shapes" className="hover:text-ink">Shapes</a>
             <a href="#how" className="hover:text-ink">How it works</a>
@@ -88,7 +88,7 @@ export default function Landing() {
             <Link to="/docs" className="hover:text-ink">Docs</Link>
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <Link to="/discover" className="rounded-lg bg-violet px-4 py-2 text-sm font-medium">Launch app</Link>
+            <Link to="/discover" className="rounded-xl bg-violet px-5 py-2.5 text-base font-medium">Launch app</Link>
           </div>
         </div>
       </header>
