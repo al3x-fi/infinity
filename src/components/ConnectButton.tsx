@@ -28,7 +28,7 @@ function Live() {
 
   if (!isConnected || !address) {
     return (
-      <button onClick={() => open({ view: "Connect" })} className="rounded-xl bg-violet px-5 py-2.5 text-base font-medium">
+      <button onClick={() => open({ view: "Connect" })} className="rounded-xl bg-violet px-3.5 py-2.5 text-sm font-medium md:px-5 md:text-base">
         Connect wallet
       </button>
     );
@@ -39,7 +39,7 @@ function Live() {
   return (
     <div ref={box} className="relative">
       <button onClick={() => setMenu(!menu)} aria-haspopup="menu" aria-expanded={menu}
-        className="flex items-center gap-2.5 rounded-xl border border-line py-1.5 pl-2 pr-3 text-base hover:bg-ink/5">
+        className="flex items-center gap-2 rounded-xl border border-line py-1 pl-1.5 pr-2.5 text-sm hover:bg-ink/5 md:gap-2.5 md:py-1.5 md:pl-2 md:pr-3 md:text-base">
         <Avatar address={address} username={profile?.username} src={profile?.avatar} size={30} />
         {profile ? <span>@{profile.username}</span> : <span><span className="text-up">●</span> {short(address)}</span>}
         <span className="text-xs text-mute">{menu ? "▴" : "▾"}</span>
@@ -53,7 +53,6 @@ function Live() {
           <div className="border-t border-line pt-1">
             <button role="menuitem" className={item} onClick={() => go("/profile")}>Profile</button>
             <button role="menuitem" className={item} onClick={() => go("/referrals")}>Referrals</button>
-            <button role="menuitem" className={item} onClick={() => go(`/u/${profile?.username ?? address}`)}>My public page</button>
           </div>
           <div className="border-t border-line pt-1">
             <button role="menuitem" className={`${item} text-mute`} onClick={() => { setMenu(false); disconnect(); }}>Disconnect</button>
@@ -67,7 +66,7 @@ function Live() {
 export default function ConnectButton() {
   if (!walletReady) {
     return (
-      <Link to="/profile" className="rounded-xl border border-line px-5 py-2.5 text-base text-mute"
+      <Link to="/profile" className="rounded-xl border border-line px-3.5 py-2.5 text-sm text-mute md:px-5 md:text-base"
         title="WalletConnect needs a project ID. Open Profile for setup steps.">
         Connect wallet
       </Link>

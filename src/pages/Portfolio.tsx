@@ -9,6 +9,9 @@ import type { PositionInfo } from "../adapters/types/DexAdapter";
 import { portfolioLink } from "../lib/referral";
 import { USERNAME_RE, fetchByUsername, useProfile } from "../lib/profile";
 import { short } from "../components/ConnectButton";
+import FollowButton from "../components/FollowButton";
+import { walletReady } from "../wallet/appkit";
+import Connections from "../components/Connections";
 
 /** Public, read-only view of a wallet's positions. The URL can hold a wallet address or a username. */
 export default function Portfolio() {
@@ -54,9 +57,15 @@ export default function Portfolio() {
     <>
       <PageHero
         title={profile ? `@${profile.username}` : short(address)}
-        right={<Avatar address={address} username={profile?.username} src={profile?.avatar} size={72} />}
+        right={
+          <div className="flex flex-col items-end gap-3">
+            <Avatar address={address} username={profile?.username} src={profile?.avatar} size={72} />
+            {walletReady && <FollowButton target={address} />}
+          </div>
+        }
         intro="A public, read-only view of this wallet's liquidity positions on the DEXs INFINITY supports. Anyone can see this, because the data is already public on chain."
       />
+      <Connections address={address} />
       <Panel title="Share this portfolio">
         <CopyField value={portfolioLink(profile?.username ?? address)} />
       </Panel>

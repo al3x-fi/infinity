@@ -8,6 +8,7 @@ WorkingDirectory=/opt/infinity-profiles
 Environment=PORT=3101
 Environment=DATA_FILE=/var/lib/infinity-profiles/profiles.json
 Environment=ORIGINS=https://infinity-suhu.vercel.app,https://infinity-xi-lemon.vercel.app,https://infinity0.xyz,http://201.18.222.194,http://localhost:5173
+EnvironmentFile=-/etc/infinity-profiles.env
 ExecStart=/usr/bin/node server.mjs
 Restart=always
 RestartSec=3

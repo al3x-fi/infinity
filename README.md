@@ -16,6 +16,7 @@ A concentrated liquidity terminal being built for the **Zero** network (LayerZer
 - **Public portfolios** — read-only view of any wallet at `/u/:address`, on-chain data only
 - **Referrals** — share a `?ref=` link; the referrer code is remembered locally (no backend yet)
 - **Wallet profiles** — pick a username and avatar; changes require a wallet signature (plain-text message, no keys ever shared)
+- **Follow, notifications and search** — follow wallets, a notification bell with team announcements, and a global search
 - **Analytics** and in-app **Docs**
 - Wallet connect via WalletConnect (Reown AppKit) — never asks for a seed phrase or private key
 

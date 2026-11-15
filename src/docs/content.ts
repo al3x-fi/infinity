@@ -37,10 +37,15 @@ export const docs: DocPage[] = [
         { t: "note", text: "Wallet testing mode: you can connect on Ethereum or Sepolia. Zero will be added once its official network details are verified." },
       ] },
       { id: "profile", title: "Your profile", blocks: [
-        { t: "p", text: "After connecting, open Profile to see your address, the connected network and your balance in that network's native coin. This page is read-only." },
+        { t: "p", text: "The first time you connect, INFINITY offers to set a username and a picture. You can skip it and do it later. Once connected, your picture and name replace the Connect button. Click them to open the wallet menu with Profile, Referrals, My public page and Disconnect." },
+        { t: "p", text: "The Profile page shows your address, the connected network and your balance in that network's native coin. It is read-only apart from your username and picture." },
       ] },
       { id: "explore", title: "Explore pools", blocks: [
-        { t: "p", text: "Pools lists demo pools you can search, filter by DEX and fee tier, and sort. Open a pool to see its chart, your liquidity shape and the add-liquidity form. The form is a preview: it cannot create a position yet." },
+        { t: "p", text: "Pools lists demo pools as cards grouped by DEX, or as a table. You can search, sort, filter by risk, DEX and fee tier, and switch views. Open a pool to see its chart, your liquidity shape and the add-liquidity form. The form is a preview: it cannot create a position yet." },
+        { t: "p", text: "Select the star on any pool to add it to your watchlist, then use the Watchlist tab on the Pools page to see only those pools." },
+      ] },
+      { id: "swap", title: "The Swap panel", blocks: [
+        { t: "p", text: "Each pool page has a swap form for the pool's two tokens. It is the interface only: no DEX router is verified yet, so there are no quotes and the button stays disabled. Rate, route and price impact show a dash, which means unavailable, not zero." },
       ] },
     ],
   },
@@ -106,8 +111,42 @@ export const docs: DocPage[] = [
     ],
   },
   {
+    slug: "profiles", title: "Profiles and referrals", group: "Platform",
+    intro: "A public username and picture, a shareable portfolio page, and referral links.",
+    sections: [
+      { id: "username", title: "Username and picture", blocks: [
+        { t: "p", text: "Connect a wallet and choose a username (3 to 20 characters: lowercase letters, numbers or underscore) and an optional picture. Usernames are unique: if someone already has the one you want, you are asked to pick another. Pictures are shrunk to a small square before saving." },
+        { t: "p", text: "Saving asks your wallet to sign a short text message. It is free, sends no transaction, and only proves the address is yours, so nobody else can change your profile. Your username and picture are public." },
+      ] },
+      { id: "public", title: "Your profile and how others see it", blocks: [
+        { t: "p", text: "Your Profile page holds everything about you in one place: your username and picture, your followers and following, your share link and your positions. There is no separate page to manage." },
+        { t: "p", text: "Other people see a read-only version of it at /u/ followed by your username or wallet address. Anyone with the link can open it. It shows only information that is already public on chain, and it cannot move funds." },
+        { t: "p", text: "Use the search button next to the bell to open someone else's profile. Type at least two letters of a username, or paste a full wallet address." },
+        { t: "note", text: "The page lists positions only for DEXs INFINITY has integrated. None is integrated yet, so it says so instead of showing an empty list. Earnings will appear once real positions can be read." },
+      ] },
+      { id: "following", title: "Following other wallets", blocks: [
+        { t: "p", text: "On any public portfolio page, select Follow to follow that wallet. Open the Following page from your Profile by selecting the following count. It lists who you follow, with an Unfollow button for each, and every public page shows follower and following counts you can open as lists." },
+        { t: "p", text: "Following and unfollowing ask your wallet for a free signature. Who follows whom is public, in the same way on-chain activity is public. You can follow up to 500 wallets, and you cannot follow yourself." },
+        { t: "p", text: "The Following page also has an activity list. It is meant to show when a wallet you follow opens or closes a liquidity position, with a number on the bell when something is new. The Alerts setting turns that number on or off." },
+        { t: "note", text: "Position activity needs a real DEX adapter to read positions. None is integrated yet, so the activity list is empty today. Empty does not mean a wallet is inactive. Telegram and email alerts are not available yet." },
+        { t: "p", text: "Activity from other wallets is information, not advice. Past activity does not predict results, and copying someone else's position can lose you money." },
+      ] },
+      { id: "bell", title: "The notification bell", blocks: [
+        { t: "p", text: "The bell sits next to the Connect button. It shows messages from the INFINITY team to everyone. Once a wallet is connected, it also lists activity from the wallets you follow, and a number on the bell counts what is new since you last opened it." },
+        { t: "p", text: "Turn the badge off on the Following page under Alerts. Wallet activity stays empty until a DEX is integrated, because INFINITY cannot read positions before then. Team messages work today." },
+      ] },
+      { id: "referrals", title: "Referral links", blocks: [
+        { t: "p", text: "On the Referrals page you can use your username or wallet address as your referral code and copy a link in the form /?ref=yourcode. When someone arrives through it, their browser remembers the first code they saw." },
+        { t: "note", text: "Rewards are not live. INFINITY charges a 0% fee, so there is nothing to share, and referrals are not counted or paid yet." },
+      ] },
+      { id: "storage", title: "Where it is stored", blocks: [
+        { t: "p", text: "Usernames and pictures are stored on INFINITY's own server so others can see them. Your watchlist is different: it is saved only in your browser, so it stays on that device." },
+      ] },
+    ],
+  },
+  {
     slug: "token-safety", title: "Token safety", group: "Platform",
-    intro: "An explainable risk report, not a safety label.",
+    intro: "An explainable risk report, not a safety label. Planned: the Token Safety tab is hidden in the current build.",
     sections: [
       { id: "checks", title: "What is checked", blocks: [
         { t: "ul", items: ["Top holder concentration and deployer holdings.", "Contract ownership, mint and blacklist permissions.", "Trading restrictions.", "Sniper wallets and bundled launch activity.", "Liquidity history and removal events."] },
@@ -125,6 +164,9 @@ export const docs: DocPage[] = [
       { id: "wallet", title: "Wallet connection", blocks: [
         { t: "p", text: "Connecting a wallet lets INFINITY read your address and balance. It cannot move funds or approve anything on its own." },
       ] },
+      { id: "signing", title: "Message signing", blocks: [
+        { t: "p", text: "Saving a username or picture asks your wallet to sign a plain-text message that names your address, the username and a timestamp. A signature is not a transaction: it costs nothing and cannot spend your assets. Read the message in your wallet before approving, and never sign a message that asks for anything else." },
+      ] },
       { id: "tx", title: "Transaction safeguards", blocks: [
         { t: "p", text: "When transactions are enabled, INFINITY is designed to apply these protections:" },
         { t: "ul", items: ["Exact-amount token approvals by default.", "Slippage limits and deadlines on every position change.", "Ownership checks before acting on a position.", "Chain ID checks before each transaction.", "Simulation before you are asked to sign."] },
@@ -139,10 +181,10 @@ export const docs: DocPage[] = [
     intro: "What exists and what is next.",
     sections: [
       { id: "done", title: "Built", blocks: [
-        { t: "ul", items: ["Interface: pools, pool details, Liquidity Studio, positions, token safety, analytics, profile.", "Strategy mathematics and distribution previews.", "Wallet connection with WalletConnect in testing mode.", "Adapter interface and registry."] },
+        { t: "ul", items: ["Interface: pools (cards and table), pool details with a swap form, Liquidity Studio, analytics, docs.", "Watchlist: star pools and filter to them.", "Follow wallets, with follower counts, a Following page and an activity feed that fills once positions can be read.", "Wallet connection with WalletConnect in testing mode, and a wallet menu.", "Profiles: username and picture stored on our server, saved with a wallet signature.", "Public portfolio pages by address or username, and referral links.", "Strategy mathematics and distribution previews.", "Adapter interface and registry."] },
       ] },
       { id: "next", title: "Next", blocks: [
-        { t: "ul", items: ["Verify Zero's chain ID, RPC and explorer from official sources.", "Integrate the first verified DEX and show live pools.", "Position creation, fee collection and withdrawal, tested on a testnet first.", "Indexer for positions, volume and token safety data.", "Independent security review before any mainnet use."] },
+        { t: "ul", items: ["Verify Zero's chain ID, RPC and explorer from official sources.", "Integrate the first verified DEX and show live pools and real positions.", "Position creation, fee collection and withdrawal, tested on a testnet first.", "Indexer for positions, earnings, volume and token safety data.", "Bring back Token Safety once there is real data behind it.", "Referral rewards, only after a fee and a counting system exist.", "Independent security review before any mainnet use."] },
       ] },
     ],
   },
@@ -153,6 +195,10 @@ export const docs: DocPage[] = [
       { id: "real", title: "Is the data real?", blocks: [{ t: "p", text: "Not yet. Pools, prices and charts are fabricated demo data, labelled as such throughout the app. Your wallet balance on the Profile page is real." }] },
       { id: "zero", title: "Does it work on Zero?", blocks: [{ t: "p", text: "Not yet. Zero's network details have not been verified, so wallets connect on Ethereum or Sepolia for testing only." }] },
       { id: "funds", title: "Can INFINITY take my funds?", blocks: [{ t: "p", text: "No. It never holds funds or keys, and nothing can be sent without your wallet's explicit approval. Today it cannot send transactions at all." }] },
+      { id: "username", title: "Where is my username stored?", blocks: [{ t: "p", text: "On INFINITY's server, together with your wallet address and picture, so others can see them. Saving requires a wallet signature, and the information is public. Your watchlist is not stored on the server: it stays in your browser." }] },
+      { id: "follow", title: "Will I be notified when someone I follow adds liquidity?", blocks: [{ t: "p", text: "Not yet. You can follow wallets now, but alerts need INFINITY to read positions from a real DEX, and none is integrated yet. When one is, new activity will appear on the Following page and in the bell. Telegram and email alerts come later." }] },
+      { id: "swap", title: "Does swapping work?", blocks: [{ t: "p", text: "Not yet. The swap form on each pool page is the interface only. It stays disabled until a DEX router is verified and integrated." }] },
+      { id: "referral", title: "Do referrals pay anything?", blocks: [{ t: "p", text: "Not yet. Links are created and remembered, but INFINITY charges no fee today and does not count or pay referrals." }] },
       { id: "advice", title: "Is this financial advice?", blocks: [{ t: "p", text: "No. Providing liquidity carries risk, including loss of funds. Use only funds you can afford to lose." }] },
     ],
   },

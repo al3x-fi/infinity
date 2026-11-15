@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 export interface Profile { username: string; avatar: string | null }
 
 export const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
-const API = (import.meta.env.VITE_PROFILE_API as string | undefined) ?? "https://infinity0.xyz/pf";
+export const API = (import.meta.env.VITE_PROFILE_API as string | undefined) ?? "https://infinity0.xyz/pf";
 const EVENT = "infinity-profile-change";
 const key = (a: string) => `infinity-profile-${a.toLowerCase()}`;
 const skipKey = (a: string) => `infinity-profile-skip-${a.toLowerCase()}`;

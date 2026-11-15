@@ -9,6 +9,8 @@ import { short } from "../components/ConnectButton";
 import { Link } from "react-router-dom";
 import CopyField from "../components/CopyField";
 import ProfileEditor from "../components/ProfileEditor";
+import Connections from "../components/Connections";
+import { useProfile } from "../lib/profile";
 import { portfolioLink } from "../lib/referral";
 
 function Setup() {
@@ -36,6 +38,7 @@ function Connected() {
   const [balance, setBalance] = useState<string | null>(null);
   const [balanceError, setBalanceError] = useState(false);
   const [positions, setPositions] = useState<PositionInfo[] | null>(null);
+  const myProfile = useProfile(address);
 
   useEffect(() => {
     setBalance(null);
@@ -75,6 +78,8 @@ function Connected() {
         <ProfileEditor address={address} />
       </Panel>
 
+      <Connections address={address} followingHref="/following" />
+
       <Panel title="Wallet" right={<button onClick={() => disconnect()} className="text-xs text-mute hover:text-ink">Disconnect</button>}>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           <Stat label="Address" value={short(address)} />
@@ -110,7 +115,7 @@ function Connected() {
 
       <Panel title="Share">
         <p className="mb-2 text-xs text-mute">Anyone with this link can see your positions. It shows public on-chain data only and cannot move funds.</p>
-        <CopyField value={portfolioLink(address)} />
+        <CopyField value={portfolioLink(myProfile?.username ?? address)} />
         <Link to="/referrals" className="mt-3 inline-block text-xs text-mute hover:text-ink">Get a referral link →</Link>
       </Panel>
 

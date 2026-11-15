@@ -2,6 +2,8 @@ import { NavLink, Outlet, useLocation } from "react-router-dom";
 import ConnectButton from "./ConnectButton";
 import Footer from "./Footer";
 import FirstConnectPrompt from "./FirstConnectPrompt";
+import SearchButton from "./SearchButton";
+import NotificationBell from "./NotificationBell";
 import { walletReady } from "../wallet/appkit";
 
 const links = [
@@ -26,9 +28,9 @@ export default function Layout() {
         DEMONSTRATION DATA — no blockchain connection yet. Nothing here is real, and no transactions can be sent.
       </div>
       <header className="border-b border-line">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-8 px-4 py-4">
-          <NavLink to="/" aria-label="INFINITY home">
-            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-7 w-auto md:h-9" />
+        <div className="relative mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:flex-wrap md:gap-8 md:py-4">
+          <NavLink to="/" aria-label="INFINITY home" className="shrink-0">
+            <img src={`${import.meta.env.BASE_URL}logo.png`} alt="INFINITY" className="h-5 w-auto sm:h-6 md:h-9" />
           </NavLink>
           <nav className="hidden flex-wrap gap-1 text-base md:flex">
             {links.map(([to, label]) => (
@@ -42,7 +44,9 @@ export default function Layout() {
               </NavLink>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5 md:gap-2">
+            <SearchButton />
+            <NotificationBell />
             <ConnectButton />
           </div>
         </div>

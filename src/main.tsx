@@ -13,6 +13,7 @@ import LiquidityStudio from "./pages/LiquidityStudio";
 import Analytics from "./pages/Analytics";
 import Referrals from "./pages/Referrals";
 import Portfolio from "./pages/Portfolio";
+import Following from "./pages/Following";
 import { captureRef } from "./lib/referral";
 // Loaded on demand so the database client is not part of the public site bundle.
 const Admin = lazy(() => import("./pages/Admin"));
@@ -35,6 +36,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="analytics" element={<Analytics />} />
           <Route path="profile" element={<Profile />} />
           <Route path="referrals" element={<Referrals />} />
+          <Route path="following" element={<Following />} />
           <Route path="u/:address" element={<Portfolio />} />
           <Route path="admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
           <Route path="docs" element={<Docs />} />
