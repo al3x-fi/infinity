@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { getReferrer } from "./referral";
 
 /**
  * Username and picture for a wallet. The server (server/profiles) is the source of truth, so other
@@ -67,12 +68,14 @@ export async function saveProfile(
   try {
     const issued = Date.now();
     const hash = p.avatar ? await sha256(p.avatar) : "none";
-    const message = `INFINITY profile\nAddress: ${address.toLowerCase()}\nUsername: ${p.username}\nAvatar: ${hash}\nIssued: ${issued}`;
+    // The referral code this browser arrived with (if any). It counts only when this is a brand-new profile.
+    const ref = getReferrer();
+    const message = `INFINITY profile\nAddress: ${address.toLowerCase()}\nUsername: ${p.username}\nAvatar: ${hash}\nReferrer: ${ref ?? "none"}\nIssued: ${issued}`;
     const signature = await sign(message);
     const r = await fetch(`${API}/profile`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ address, username: p.username, avatar: p.avatar, issued, signature }),
+      body: JSON.stringify({ address, username: p.username, avatar: p.avatar, referrer: ref, issued, signature }),
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) return { ok: false, error: j.error ?? "Could not save your profile." };

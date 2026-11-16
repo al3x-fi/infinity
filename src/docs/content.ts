@@ -136,8 +136,10 @@ export const docs: DocPage[] = [
         { t: "p", text: "Turn the badge off on the Following page under Alerts. Wallet activity stays empty until a DEX is integrated, because INFINITY cannot read positions before then. Team messages work today." },
       ] },
       { id: "referrals", title: "Referral links", blocks: [
-        { t: "p", text: "On the Referrals page you can use your username or wallet address as your referral code and copy a link in the form /?ref=yourcode. When someone arrives through it, their browser remembers the first code they saw." },
-        { t: "note", text: "Rewards are not live. INFINITY charges a 0% fee, so there is nothing to share, and referrals are not counted or paid yet." },
+        { t: "p", text: "On the Referrals page you get a link in the form /?ref=yourcode. Your code is your username, or your wallet address if you have not chosen one. When someone opens it, their browser remembers the first code it saw." },
+        { t: "p", text: "A referral is counted when that person connects a wallet and creates a profile, which needs their wallet signature. The Referrals page then shows how many people you referred, who they are, and a public leaderboard of top referrers." },
+        { t: "ul", items: ["Each wallet is counted once, for the first link it arrived through.", "You cannot refer yourself.", "Wallets that already had a profile are not counted.", "It counts wallets, not verified unique people, because anyone can create several wallets."] },
+        { t: "note", text: "Rewards are not live. INFINITY charges a 0% fee, so there is nothing to share yet. The counts show who brought whom, not earnings." },
       ] },
       { id: "storage", title: "Where it is stored", blocks: [
         { t: "p", text: "Usernames and pictures are stored on INFINITY's own server so others can see them. Your watchlist is different: it is saved only in your browser, so it stays on that device." },
@@ -181,10 +183,10 @@ export const docs: DocPage[] = [
     intro: "What exists and what is next.",
     sections: [
       { id: "done", title: "Built", blocks: [
-        { t: "ul", items: ["Interface: pools (cards and table), pool details with a swap form, Liquidity Studio, analytics, docs.", "Watchlist: star pools and filter to them.", "Follow wallets, with follower counts, a Following page and an activity feed that fills once positions can be read.", "Wallet connection with WalletConnect in testing mode, and a wallet menu.", "Profiles: username and picture stored on our server, saved with a wallet signature.", "Public portfolio pages by address or username, and referral links.", "Strategy mathematics and distribution previews.", "Adapter interface and registry."] },
+        { t: "ul", items: ["Interface: pools (cards and table), pool details with a swap form, Liquidity Studio, analytics, docs.", "Watchlist: star pools and filter to them.", "Follow wallets, with follower counts, a Following page and an activity feed that fills once positions can be read.", "Wallet connection with WalletConnect in testing mode, and a wallet menu.", "Profiles: username and picture stored on our server, saved with a wallet signature.", "Public portfolio pages by address or username, and referral links with counting and a leaderboard.", "Strategy mathematics and distribution previews.", "Adapter interface and registry."] },
       ] },
       { id: "next", title: "Next", blocks: [
-        { t: "ul", items: ["Verify Zero's chain ID, RPC and explorer from official sources.", "Integrate the first verified DEX and show live pools and real positions.", "Position creation, fee collection and withdrawal, tested on a testnet first.", "Indexer for positions, earnings, volume and token safety data.", "Bring back Token Safety once there is real data behind it.", "Referral rewards, only after a fee and a counting system exist.", "Independent security review before any mainnet use."] },
+        { t: "ul", items: ["Verify Zero's chain ID, RPC and explorer from official sources.", "Integrate the first verified DEX and show live pools and real positions.", "Position creation, fee collection and withdrawal, tested on a testnet first.", "Indexer for positions, earnings, volume and token safety data.", "Bring back Token Safety once there is real data behind it.", "Referral rewards, only after a fee exists and fake-wallet checks are in place.", "Independent security review before any mainnet use."] },
       ] },
     ],
   },
@@ -198,7 +200,7 @@ export const docs: DocPage[] = [
       { id: "username", title: "Where is my username stored?", blocks: [{ t: "p", text: "On INFINITY's server, together with your wallet address and picture, so others can see them. Saving requires a wallet signature, and the information is public. Your watchlist is not stored on the server: it stays in your browser." }] },
       { id: "follow", title: "Will I be notified when someone I follow adds liquidity?", blocks: [{ t: "p", text: "Not yet. You can follow wallets now, but alerts need INFINITY to read positions from a real DEX, and none is integrated yet. When one is, new activity will appear on the Following page and in the bell. Telegram and email alerts come later." }] },
       { id: "swap", title: "Does swapping work?", blocks: [{ t: "p", text: "Not yet. The swap form on each pool page is the interface only. It stays disabled until a DEX router is verified and integrated." }] },
-      { id: "referral", title: "Do referrals pay anything?", blocks: [{ t: "p", text: "Not yet. Links are created and remembered, but INFINITY charges no fee today and does not count or pay referrals." }] },
+      { id: "referral", title: "Do referrals pay anything?", blocks: [{ t: "p", text: "Not yet. Referrals are counted, but INFINITY charges no fee today, so there is nothing to pay out. Rewards would need a fee and stricter checks against fake wallets." }] },
       { id: "advice", title: "Is this financial advice?", blocks: [{ t: "p", text: "No. Providing liquidity carries risk, including loss of funds. Use only funds you can afford to lose." }] },
     ],
   },

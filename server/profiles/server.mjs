@@ -27,8 +27,8 @@ const MAX_EVENTS = 5000;
 let profiles = {};
 try { profiles = JSON.parse(fs.readFileSync(FILE, "utf8")); } catch { /* first run */ }
 
-/** @type {{follows: Record<string, string[]>, lastIssued: Record<string, number>, events: any[]}} */
-let social = { follows: {}, lastIssued: {}, events: [] };
+/** @type {{follows: Record<string, string[]>, lastIssued: Record<string, number>, events: any[], referrals: Record<string, {referrer: string, ts: number}>, announcements: any[]}} */
+let social = { follows: {}, lastIssued: {}, events: [], referrals: {}, announcements: [] };
 try { social = { ...social, ...JSON.parse(fs.readFileSync(SOCIAL_FILE, "utf8")) }; } catch { /* first run */ }
 
 const byName = () => Object.fromEntries(Object.entries(profiles).map(([a, p]) => [p.username, a]));
@@ -54,6 +54,23 @@ function limited(ip, max = 20) {
 
 export const messageFor = (address, username, avatarHash, issued) =>
   `INFINITY profile\nAddress: ${address.toLowerCase()}\nUsername: ${username}\nAvatar: ${avatarHash}\nIssued: ${issued}`;
+// Profile messages that also name the referrer (or "none"). Older clients send the message without it.
+export const messageForV2 = (address, username, avatarHash, referrer, issued) =>
+  `INFINITY profile
+Address: ${address.toLowerCase()}
+Username: ${username}
+Avatar: ${avatarHash}
+Referrer: ${referrer ?? "none"}
+Issued: ${issued}`;
+
+// A referrer code is a wallet address or a username. Returns a lowercase address, or null when unknown.
+function resolveReferrer(code) {
+  if (typeof code !== "string") return null;
+  if (isAddress(code)) return code.toLowerCase();
+  const c = code.toLowerCase();
+  return USERNAME_RE.test(c) ? byName()[c] ?? null : null;
+}
+
 export const followMessage = (address, action, target, issued) =>
   `INFINITY follow\nAddress: ${address.toLowerCase()}\nAction: ${action}\nTarget: ${target.toLowerCase()}\nIssued: ${issued}`;
 
@@ -136,6 +153,8 @@ const server = http.createServer((req, res) => {
     if (limited(ip)) return send(res, 429, { error: "Too many updates. Try again in a few minutes." }, origin);
     return readBody(req, res, origin, (b) => {
       const { address, username, avatar = null, issued, signature } = b;
+      const hasRef = Object.prototype.hasOwnProperty.call(b, "referrer");
+      const referrer = typeof b.referrer === "string" ? b.referrer.slice(0, 60) : null;
       if (!isAddress(address)) return send(res, 400, { error: "Invalid address" }, origin);
       if (typeof username !== "string" || !USERNAME_RE.test(username)) return send(res, 400, { error: "Username must be 3 to 20 characters: a-z, 0-9, _" }, origin);
       if (avatar !== null && (typeof avatar !== "string" || avatar.length > MAX_AVATAR || !AVATAR_RE.test(avatar))) return send(res, 400, { error: "Picture must be a small JPEG" }, origin);
@@ -144,14 +163,21 @@ const server = http.createServer((req, res) => {
 
       const hash = avatar ? crypto.createHash("sha256").update(avatar).digest("hex") : "none";
       let signer;
-      try { signer = verifyMessage(messageFor(address, username, hash, issued), signature); } catch { return send(res, 400, { error: "Bad signature" }, origin); }
+      try { signer = verifyMessage(hasRef ? messageForV2(address, username, hash, referrer, issued) : messageFor(address, username, hash, issued), signature); } catch { return send(res, 400, { error: "Bad signature" }, origin); }
       if (signer.toLowerCase() !== address.toLowerCase()) return send(res, 401, { error: "Signature does not match this wallet" }, origin);
 
       const owner = byName()[username];
       if (owner && owner !== address.toLowerCase()) return send(res, 409, { error: "That username is taken" }, origin);
 
-      profiles[address.toLowerCase()] = { username, avatar, updated: Date.now() };
+      const me = address.toLowerCase();
+      const isNew = !profiles[me];
+      profiles[me] = { username, avatar, updated: Date.now() };
       persist();
+      // A referral counts once, only when a brand-new profile is created, never for yourself.
+      if (isNew && referrer && !social.referrals[me]) {
+        const r = resolveReferrer(referrer);
+        if (r && r !== me) { social.referrals[me] = { referrer: r, ts: Date.now() }; persistSocial(); }
+      }
       return send(res, 200, { ok: true, address: getAddress(address), username, avatar }, origin);
     });
   }
@@ -199,6 +225,24 @@ const server = http.createServer((req, res) => {
       persistSocial();
       return send(res, 200, { ok: true, following: list.includes(t), followers: followers(t).length }, origin);
     });
+  }
+
+  /* ---------- referrals ---------- */
+
+  const referredBy = (a) => Object.entries(social.referrals).filter(([, v]) => v.referrer === a).map(([w, v]) => ({ wallet: w, ts: v.ts }));
+
+  if (req.method === "GET" && parts[0] === "referrals") {
+    const a = addrParam();
+    if (!a) return send(res, 400, { error: "Invalid address" }, origin);
+    const list = referredBy(a).sort((x, y) => y.ts - x.ts);
+    return send(res, 200, { count: list.length, referred: list.slice(0, 50).map((x) => ({ ...brief(x.wallet), ts: x.ts })), referrer: social.referrals[a] ? brief(social.referrals[a].referrer) : null }, origin);
+  }
+
+  if (req.method === "GET" && parts[0] === "leaderboard") {
+    const tally = {};
+    for (const v of Object.values(social.referrals)) tally[v.referrer] = (tally[v.referrer] ?? 0) + 1;
+    const top = Object.entries(tally).sort((x, y) => y[1] - x[1]).slice(0, 20).map(([a, n]) => ({ ...brief(a), count: n }));
+    return send(res, 200, { leaders: top, total: Object.keys(social.referrals).length }, origin);
   }
 
   /* ---------- feed ---------- */

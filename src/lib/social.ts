@@ -62,6 +62,16 @@ export function useFollowing(address?: string) {
   return { list, has: (a: string) => set.has(a.toLowerCase()), reload: load };
 }
 
+/* ---------- referrals ---------- */
+
+export interface Referral extends Brief { ts: number }
+export async function fetchReferrals(address: string): Promise<{ count: number; referred: Referral[]; referrer: Brief | null } | null> {
+  try { const r = await fetch(`${API}/referrals/${address}`); return r.ok ? await r.json() : null; } catch { return null; }
+}
+export async function fetchLeaderboard(): Promise<{ leaders: (Brief & { count: number })[]; total: number } | null> {
+  try { const r = await fetch(`${API}/leaderboard`); return r.ok ? await r.json() : null; } catch { return null; }
+}
+
 /* ---------- team messages and search ---------- */
 
 export interface Announcement { id: string; title: string; body: string; ts: number }
