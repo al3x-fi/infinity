@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 import { Bar, BarChart, Cell, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { demoPools } from "../demo/data";
 import { PageHero, Panel, Stat } from "../components/ui";
+import ILCalculator from "../components/ILCalculator";
+import ShareCard from "../components/ShareCard";
 import { buildBins, fmtNum, requirements, type Strategy } from "../lib/liquidity";
 
 const N = 12;
@@ -25,11 +27,11 @@ export default function LiquidityStudio() {
   const upper = pool.price * (1 + highPct / 100);
   const valid = lower > 0 && upper > lower && total > 0;
 
-  const calc = useMemo(() => {
-    if (!valid) return null;
-    const bins = buildBins(strategy, lower, upper, pool.price, N, custom);
-    return requirements(bins, pool.price, total);
-  }, [valid, strategy, lower, upper, pool.price, total, custom]);
+  const bins = useMemo(
+    () => (valid ? buildBins(strategy, lower, upper, pool.price, N, custom) : []),
+    [valid, strategy, lower, upper, pool.price, custom],
+  );
+  const calc = useMemo(() => (valid ? requirements(bins, pool.price, total) : null), [valid, bins, pool.price, total]);
 
   const data = calc?.perBin.map((b) => ({
     price: Math.sqrt(b.lower * b.upper),
@@ -119,6 +121,9 @@ export default function LiquidityStudio() {
           </div>
         </Panel>
       )}
+      {valid && (
+        <ILCalculator bins={bins} price={pool.price} total={total} quote={pool.pair[1]} base={pool.pair[0]} />
+      )}
       <Panel title="Out-of-range risk">
         <p className="text-sm text-mute">
           If the price leaves your range, your position stops earning fees and is converted entirely into one token
@@ -127,6 +132,12 @@ export default function LiquidityStudio() {
         </p>
       </Panel>
       <Panel title="3 · Review &amp; confirm">
+        {valid && (
+          <div className="mb-3">
+            <ShareCard pair={pool.pair as [string, string]} dex={pool.dex} shape={strategies.find((s) => s.key === strategy)!.label}
+              lowPct={lowPct} highPct={highPct} price={pool.price} lower={lower} upper={upper} bins={bins} />
+          </div>
+        )}
         <button disabled className="rounded-lg border border-line px-4 py-2 text-mute"
           title="Disabled: no wallet or DEX position manager connected">
           Approve &amp; create position (unavailable in demo)

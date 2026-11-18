@@ -1,0 +1,6 @@
+[Unit]
+Description=INFINITY profiles daily backup
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/infinity-backup.sh

@@ -1,0 +1,9 @@
+[Unit]
+Description=Run the INFINITY profiles backup every day
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

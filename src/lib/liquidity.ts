@@ -51,6 +51,25 @@ export function requirements(bins: Bin[], price: number, totalValue: number) {
   return { perBin, amount0: x, amount1: y };
 }
 
+/**
+ * Value of the whole distribution at price `p` versus just holding the tokens deposited at `price`.
+ * `il` is the relative difference (<= 0) and does not include any fees earned.
+ */
+export function lpVsHold(bins: Bin[], price: number, totalValue: number, p: number) {
+  let lp = 0, x0 = 0, y0 = 0;
+  for (const bin of bins) {
+    const e = amountsPerL(bin.lower, bin.upper, price);
+    const valuePerL = e.x * price + e.y;
+    const L = valuePerL > 0 ? (bin.weight * totalValue) / valuePerL : 0;
+    const q = amountsPerL(bin.lower, bin.upper, p);
+    lp += L * (q.x * p + q.y);
+    x0 += L * e.x;
+    y0 += L * e.y;
+  }
+  const hold = x0 * p + y0;
+  return { lp, hold, il: hold > 0 ? lp / hold - 1 : 0 };
+}
+
 export function fmtNum(n: number | null, digits = 2): string {
   if (n === null) return "N/A";
   if (n !== 0 && Math.abs(n) < 0.01) return n.toPrecision(3);

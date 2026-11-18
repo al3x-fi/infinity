@@ -75,6 +75,13 @@ export const docs: DocPage[] = [
       { id: "curve", title: "Curve", blocks: [{ t: "p", text: "Liquidity is weighted toward the current price, where most trading happens. It earns more while the price is calm and thins out toward the edges." }] },
       { id: "bidask", title: "Bid-Ask", blocks: [{ t: "p", text: "Liquidity is weighted toward the lower and upper boundaries. It suits traders who expect large moves and want to buy or sell into them." }] },
       { id: "custom", title: "Custom", blocks: [{ t: "p", text: "You set your own range and the weight of each bin in the Liquidity Studio." }] },
+      { id: "il", title: "Impermanent loss calculator", blocks: [
+        { t: "p", text: "In Liquidity Studio, below the distribution preview, drag the price slider to see what your shaped position would be worth compared with simply holding the same tokens. The chart shows the gap across a wide range of price moves, and the table lists common cases such as -50% and +100%." },
+        { t: "note", text: "It is a simplified model on demo prices. It ignores trading fees, gas and slippage, and assumes the price moves once and stays there. Fees you earn can offset the loss, or not. Real results differ." },
+      ] },
+      { id: "share", title: "Share this setup", blocks: [
+        { t: "p", text: "At the bottom of Liquidity Studio, Share this setup shows an image of your pair, range and shape. You can download it or open X with the text filled in and attach the image. The image does not include your deposit amount or your wallet." },
+      ] },
       { id: "cost", title: "Cost of shaping", blocks: [
         { t: "p", text: "On Uniswap V3 style DEXs one position covers one range. A shaped distribution is built from several adjacent positions, one per bin, so it takes more transactions and more gas than Spot. INFINITY shows the number of positions before you confirm." },
       ] },
@@ -183,7 +190,7 @@ export const docs: DocPage[] = [
     intro: "What exists and what is next.",
     sections: [
       { id: "done", title: "Built", blocks: [
-        { t: "ul", items: ["Interface: pools (cards and table), pool details with a swap form, Liquidity Studio, analytics, docs.", "Watchlist: star pools and filter to them.", "Follow wallets, with follower counts, a Following page and an activity feed that fills once positions can be read.", "Wallet connection with WalletConnect in testing mode, and a wallet menu.", "Profiles: username and picture stored on our server, saved with a wallet signature.", "Public portfolio pages by address or username, and referral links with counting and a leaderboard.", "Strategy mathematics and distribution previews.", "Adapter interface and registry."] },
+        { t: "ul", items: ["Interface: pools (cards and table), pool details with a swap form, Liquidity Studio, analytics, docs.", "Watchlist: star pools and filter to them.", "Follow wallets, with follower counts, a Following page and an activity feed that fills once positions can be read.", "Wallet connection with WalletConnect in testing mode, and a wallet menu.", "Profiles: username and picture stored on our server, saved with a wallet signature.", "Public portfolio pages by address or username, and referral links with counting and a leaderboard.", "Strategy mathematics, distribution previews and an impermanent loss calculator, with a shareable image of your setup.", "Adapter interface and registry."] },
       ] },
       { id: "next", title: "Next", blocks: [
         { t: "ul", items: ["Verify Zero's chain ID, RPC and explorer from official sources.", "Integrate the first verified DEX and show live pools and real positions.", "Position creation, fee collection and withdrawal, tested on a testnet first.", "Indexer for positions, earnings, volume and token safety data.", "Bring back Token Safety once there is real data behind it.", "Referral rewards, only after a fee exists and fake-wallet checks are in place.", "Independent security review before any mainnet use."] },

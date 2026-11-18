@@ -17,6 +17,7 @@ A concentrated liquidity terminal being built for the **Zero** network (LayerZer
 - **Referrals** — share a `?ref=` link; the referrer code is remembered locally (no backend yet)
 - **Wallet profiles** — pick a username and avatar; changes require a wallet signature (plain-text message, no keys ever shared)
 - **Follow, notifications and search** — follow wallets, a notification bell with team announcements, and a global search
+- **Liquidity tools** — impermanent-loss calculator and shareable position cards in the Studio
 - **Analytics** and in-app **Docs**
 - Wallet connect via WalletConnect (Reown AppKit) — never asks for a seed phrase or private key
 
