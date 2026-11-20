@@ -49,7 +49,7 @@ export default function ProfileEditor({ address, onSaved, onSkip }: { address: s
         </div>
       </div>
       <label className="block text-sm text-mute">Username
-        <input className="mt-1 w-full" value={shownName} maxLength={20} placeholder="e.g. suhair"
+        <input className="mt-1 w-full" value={shownName} maxLength={20} placeholder="e.g. elonmusk"
           onChange={(e) => { setName(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, "")); setError(""); }} />
       </label>
       {error && <p className="text-xs text-down">{error}</p>}
