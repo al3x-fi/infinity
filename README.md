@@ -53,6 +53,16 @@ posters/        Brand and social assets
 supabase-*.sql  Database setup
 ```
 
+## Roadmap
+
+- [ ] Verify Zero's chain ID, RPC and explorer from official sources
+- [ ] Integrate the first verified DEX; show live pools and real positions
+- [ ] Position creation, fee collection and withdrawal (testnet first)
+- [ ] Indexer for positions, earnings, volume and token safety data
+- [ ] Bring back Token Safety once there is real data behind it
+- [ ] Referral rewards, only after a fee exists and fake-wallet checks are in place
+- [ ] Independent security review before any mainnet use
+
 ## Security
 
 Never commit `.env*` files or keys. Found a vulnerability? Please open a private security advisory on this repo.
